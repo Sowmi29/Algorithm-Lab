@@ -1,0 +1,22 @@
+import matplotlib.pyplot as plt
+
+sizes_linear = [100, 200, 300, 400, 500]
+sizes_matrix = [10, 20, 30, 40, 50]
+steps_sum = [1, 1, 1, 1, 1]  
+steps_linear = [100, 200, 300, 400, 500]  
+steps_matrix = [100, 400, 900, 1600, 2500]  
+
+
+plt.figure(figsize=(12, 8))
+plt.plot(sizes_linear, steps_sum, marker='o', linestyle='-', color='b', label='Sum of Three Numbers (O(1))')
+plt.plot(sizes_linear, steps_linear, marker='o', linestyle='--', color='r', label='Linear Search (O(n))')
+plt.plot(sizes_matrix, steps_matrix, marker='o', linestyle='-.', color='g', label='Matrix Addition (O(n²))')
+
+
+plt.xlabel('Input Size')
+plt.ylabel('Count of Steps Executed')
+plt.title('Time Complexity Comparison')
+plt.legend()
+plt.grid(True)
+
+plt.show()
