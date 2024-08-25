@@ -72,11 +72,11 @@ int main()
     }
     printf("original array : \n");
     print(arr, n);
-    bubbleSort(arr, n); // Call non-optimized sort
+    bubbleSort(arr, n); 
 
-    memcpy(arr, originalArr, n * sizeof(int)); // Reset array to original
-    optimizedBubbleSort(arr, n);               // Call optimized sort
+    memcpy(arr, originalArr, n * sizeof(int)); 
+    optimizedBubbleSort(arr, n);               
 
-    print(arr, n); // Print sorted array
+    print(arr, n); 
     return 0;
 }
