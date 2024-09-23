@@ -1,0 +1,106 @@
+import java.util.*;
+
+class KnapSack{
+    public static void main(String[] args){
+       // int n,capacity;
+        System.out.println("Enter capacity and No.of Items(n) : ");
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        int capacity = scanner.nextInt();
+        int n = scanner.nextInt();
+
+        int[] weight = new int[n];
+        int[] profit = new int[n];
+
+        System.out.println("Generating weight and profit for "+n+" items");
+        for(int i=0;i<n;i++){
+            weight[i]=random.nextInt(100);
+            profit[i]=random.nextInt(200);
+        }
+        piwisort(weight, profit, n, capacity);
+        float piwiVal =  knapsack(weight, profit, n, capacity);
+        weightsort(weight, profit, n, capacity);
+        float weightVal = knapsack(weight, profit, n, capacity);
+        profitsort(weight, profit, n, capacity);
+        float profitVal = knapsack(weight, profit, n, capacity);
+
+        System.out.println("Order by Profit : "+profitVal);
+        System.out.println("Order by Weight : "+weightVal);
+        System.out.println("Order by Profit/Weight ratio : "+piwiVal);
+
+    }
+    public static float knapsack(int[] weight,int[] profit,int n,int capacity){
+        float value = 0;
+        for(int i=0;i<n;i++){
+           if(weight[i]<capacity){
+            value+=profit[i];
+            capacity-=weight[i];
+           }else{
+            value+=(profit[i]/weight[i])*capacity;
+            break;
+           }
+        }
+        return value;
+    }
+    public static void profitsort(int[] weight,int[] profit,int n,int capacity){
+        int temp;
+
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(profit[i]<profit[j]){
+                
+                     temp = weight[j];
+                     weight[j] = weight[i];
+                     weight[i] = temp;
+
+                     temp=profit[j];
+                     profit[j] = profit[i];
+                     profit[i] = temp;
+                }
+            }
+        }
+    }
+
+    public static void weightsort(int[] weight,int[] profit,int n,int capacity){
+        int temp;
+
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(weight[i]>weight[j]){
+                
+                     temp = weight[j];
+                     weight[j] = weight[i];
+                     weight[i] = temp;
+
+                     temp=profit[j];
+                     profit[j] = profit[i];
+                     profit[i] = temp;
+                }
+            }
+        }
+    }
+    public static void piwisort(int[] weight,int[] profit,int n,int capacity){
+        int temp;
+        float[] ratio = new float[n];
+        for(int i=0;i<n;i++)
+            ratio[i] = profit[i]/weight[i];
+
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(ratio[i]<ratio[j]){
+                    float temp1 =ratio[j];
+                     ratio[j] = ratio[i];
+                     ratio[i] = temp1;
+
+                     temp = weight[j];
+                     weight[j] = weight[i];
+                     weight[i] = temp;
+
+                     temp=profit[j];
+                     profit[j] = profit[i];
+                     profit[i] = temp;
+                }
+            }
+        }
+    }
+}
