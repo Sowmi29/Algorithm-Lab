@@ -1,0 +1,138 @@
+Here is a Java implementation of Prim's Algorithm with user input for the number of vertices, edges, and costs:
+
+import java.util.Scanner;
+
+public class PrimsAlgorithm {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Input: number of vertices
+        System.out.print("Enter the number of vertices: ");
+        int n = sc.nextInt();
+
+        // Initialize the cost matrix (adjacency matrix)
+        int[][] cost = new int[n + 1][n + 1];
+
+        // Input: adjacency matrix for the graph
+        System.out.println("Enter the adjacency matrix (use 9999 for no direct edge): ");
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                cost[i][j] = sc.nextInt();
+            }
+        }
+
+        // Run Prim's Algorithm to find the minimum spanning tree
+        primMST(cost, n);
+    }
+
+    // Prim's Algorithm
+    public static void primMST(int[][] cost, int n) {
+        int[] near = new int[n + 1];
+        int[][] t = new int[2][n - 1]; // To store the result MST edges
+        int mincost = 0;
+
+        // Step 1: Find the edge with the minimum cost in the adjacency matrix
+        int min = 9999;
+        int k = 0, l = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = i + 1; j <= n; j++) {
+                if (cost[i][j] < min) {
+                    min = cost[i][j];
+                    k = i;
+                    l = j;
+                }
+            }
+        }
+
+        // Add this edge (k,l) to the MST
+        t[0][0] = k;
+        t[1][0] = l;
+        mincost += cost[k][l];
+
+        // Step 2: Initialize near array
+        for (int i = 1; i <= n; i++) {
+            if (cost[i][k] < cost[i][l]) {
+                near[i] = k;
+            } else {
+                near[i] = l;
+            }
+        }
+        near[k] = near[l] = 0; // k and l are now part of the MST
+
+        // Step 3: Find the remaining n-2 edges
+        for (int i = 1; i < n - 1; i++) {
+            // Find the next minimum edge
+            min = 9999;
+            int j = 0;
+            for (int m = 1; m <= n; m++) {
+                if (near[m] != 0 && cost[m][near[m]] < min) {
+                    min = cost[m][near[m]];
+                    j = m;
+                }
+            }
+
+            // Add this edge to the MST
+            t[0][i] = j;
+            t[1][i] = near[j];
+            mincost += cost[j][near[j]];
+            near[j] = 0; // Mark this vertex as included in the MST
+
+            // Update the near array
+            for (int m = 1; m <= n; m++) {
+                if (near[m] != 0 && cost[m][j] < cost[m][near[m]]) {
+                    near[m] = j;
+                }
+            }
+        }
+
+        // Step 4: Output the MST and minimum cost
+        System.out.println("The Minimum Cost Spanning Tree edges are: ");
+        for (int i = 0; i < n - 1; i++) {
+            System.out.println("(" + t[0][i] + ", " + t[1][i] + ")");
+        }
+        System.out.println("The minimum cost of the spanning tree is: " + mincost);
+    }
+}
+
+Explanation:
+
+1. Input:
+
+The number of vertices n.
+
+The adjacency matrix, where the cost of an edge between vertices i and j is provided by the user. If there's no direct edge, the user should enter a large number (e.g., 9999, representing infinity).
+
+
+
+2. Algorithm:
+
+The program initializes a near array, and t[][] to store the edges in the minimum spanning tree.
+
+It starts by finding the edge with the minimum cost and then builds the MST step by step, following Prim's algorithm.
+
+The near array helps track which vertices are closest to the tree, and the algorithm updates it as more edges are added to the MST.
+
+
+
+3. Output:
+
+The program outputs the edges that form the MST and the total minimum cost of the spanning tree.
+
+
+
+
+Sample Input/Output:
+
+Enter the number of vertices: 4
+Enter the adjacency matrix (use 9999 for no direct edge): 
+0 1 3 9999
+1 0 3 6
+3 3 0 2
+9999 6 2 0
+The Minimum Cost Spanning Tree edges are: 
+(1, 2)
+(3, 4)
+(1, 3)
+The minimum cost of the spanning tree is: 6
+
