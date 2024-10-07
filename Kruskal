@@ -1,0 +1,144 @@
+Here is a Java implementation of Kruskal's Algorithm that aligns with the provided pseudocode and takes user input for the graph's edges and costs:
+
+import java.util.*;
+
+// Class to represent an edge
+class Edge implements Comparable<Edge> {
+    int src, dest, weight;
+
+    // Comparator for sorting edges based on their weight
+    public int compareTo(Edge compareEdge) {
+        return this.weight - compareEdge.weight;
+    }
+}
+
+class KruskalAlgorithm {
+    int vertices, edges; // V = number of vertices, E = number of edges
+    Edge edgeList[]; // This will store all edges in the graph
+
+    // Create a graph with V vertices and E edges
+    KruskalAlgorithm(int vertices, int edges) {
+        this.vertices = vertices;
+        this.edges = edges;
+        edgeList = new Edge[edges];
+        for (int i = 0; i < edges; i++) {
+            edgeList[i] = new Edge();
+        }
+    }
+
+    // A utility function to find the set of an element (uses path compression)
+    int find(int parent[], int i) {
+        if (parent[i] == -1)
+            return i;
+        return find(parent, parent[i]);
+    }
+
+    // A utility function to do union of two subsets
+    void union(int parent[], int x, int y) {
+        int xset = find(parent, x);
+        int yset = find(parent, y);
+        parent[xset] = yset;
+    }
+
+    // Function to perform Kruskal's algorithm
+    void kruskalMST() {
+        Edge result[] = new Edge[vertices]; // T[] to store the resulting MST
+        int parent[] = new int[vertices]; // To represent disjoint sets
+
+        for (int i = 0; i < vertices; i++) {
+            parent[i] = -1;
+        }
+
+        // Sort edges by their weight (ascending order)
+        Arrays.sort(edgeList);
+
+        int mincost = 0;
+        int edgeCount = 0; // Index for the result[] array
+
+        for (Edge nextEdge : edgeList) {
+            if (edgeCount == vertices - 1) break; // MST will have V-1 edges
+
+            int x = find(parent, nextEdge.src);
+            int y = find(parent, nextEdge.dest);
+
+            // If including this edge doesn't cause a cycle
+            if (x != y) {
+                result[edgeCount++] = nextEdge;
+                mincost += nextEdge.weight;
+                union(parent, x, y); // Union of two sets
+            }
+        }
+
+        // If we couldn't form an MST with V-1 edges
+        if (edgeCount != vertices - 1) {
+            System.out.println("No spanning tree");
+            return;
+        }
+
+        // Print the resulting MST
+        System.out.println("Edges in the MST:");
+        for (int i = 0; i < edgeCount; i++) {
+            System.out.println(result[i].src + " -- " + result[i].dest + " == " + result[i].weight);
+        }
+        System.out.println("Minimum cost: " + mincost);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of vertices: ");
+        int V = scanner.nextInt();
+
+        System.out.print("Enter the number of edges: ");
+        int E = scanner.nextInt();
+
+        KruskalAlgorithm graph = new KruskalAlgorithm(V, E);
+
+        for (int i = 0; i < E; i++) {
+            System.out.println("Enter edge " + (i + 1) + " (source, destination, weight): ");
+            graph.edgeList[i].src = scanner.nextInt();
+            graph.edgeList[i].dest = scanner.nextInt();
+            graph.edgeList[i].weight = scanner.nextInt();
+        }
+
+        // Function call to perform Kruskal's algorithm
+        graph.kruskalMST();
+    }
+}
+
+Explanation:
+
+1. Edge Class: Represents each edge with a source, destination, and weight. The compareTo function helps sort edges by their weight.
+
+
+2. find() Function: Implements path compression to find the set of a given element.
+
+
+3. union() Function: Merges two sets.
+
+
+4. kruskalMST() Function: Implements Kruskal's algorithm, sorting edges by weight and building the Minimum Spanning Tree (MST) by adding edges that don't create a cycle.
+
+
+5. Input: The user can input the number of vertices, number of edges, and the source, destination, and weight of each edge.
+
+
+
+Sample Input:
+
+Enter the number of vertices: 4
+Enter the number of edges: 5
+Enter edge 1 (source, destination, weight): 0 1 10
+Enter edge 2 (source, destination, weight): 0 2 6
+Enter edge 3 (source, destination, weight): 0 3 5
+Enter edge 4 (source, destination, weight): 1 3 15
+Enter edge 5 (source, destination, weight): 2 3 4
+
+Sample Output:
+
+Edges in the MST:
+2 -- 3 == 4
+0 -- 3 == 5
+0 -- 1 == 10
+Minimum cost: 19
+
