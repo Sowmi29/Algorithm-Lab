@@ -1,0 +1,76 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class ShortestPaths {
+
+    // Method to find the shortest path from source vertex v
+    public static void shortestPaths(int v, int[][] cost, int[] dist, int n) {
+        boolean[] S = new boolean[n + 1]; // Set of vertices for which shortest path is found
+        Arrays.fill(S, false); // Initialize S
+        Arrays.fill(dist, Integer.MAX_VALUE); // Initialize dist with a large number
+        
+        // Initialize source vertex
+        dist[v] = 0;
+        S[v] = true;
+        
+        // Loop to find shortest path for all vertices
+        for (int num = 2; num <= n; num++) {
+            int u = -1;
+            int minDist = Integer.MAX_VALUE;
+            
+            // Choose vertex u with minimum dist value from the set of vertices not in S
+            for (int i = 1; i <= n; i++) {
+                if (!S[i] && dist[i] < minDist) {
+                    minDist = dist[i];
+                    u = i;
+                }
+            }
+            
+            if (u == -1) return; // If no more vertices are reachable
+            
+            S[u] = true; // Mark vertex u as part of the shortest path set
+            
+            // Update dist for adjacent vertices of u
+            for (int w = 1; w <= n; w++) {
+                if (!S[w] && cost[u][w] != Integer.MAX_VALUE) {
+                    if (dist[w] > dist[u] + cost[u][w]) {
+                        dist[w] = dist[u] + cost[u][w];
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        // Input number of vertices
+        System.out.print("Enter number of vertices: ");
+        int n = sc.nextInt();
+
+        // Input the cost adjacency matrix
+        int[][] cost = new int[n + 1][n + 1]; // Cost matrix (1-based indexing)
+        System.out.println("Enter the cost adjacency matrix (Enter a large value like 999999 for no direct path):");
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                cost[i][j] = sc.nextInt();
+            }
+        }
+
+        // Input source vertex
+        System.out.print("Enter source vertex: ");
+        int sourceVertex = sc.nextInt();
+
+        int[] dist = new int[n + 1]; // Distance array
+        
+        // Call the shortestPaths function
+        shortestPaths(sourceVertex, cost, dist, n);
+        
+        // Output the shortest distances
+        for (int i = 1; i <= n; i++) {
+            System.out.println("Shortest distance from vertex " + sourceVertex + " to vertex " + i + " is " + dist[i]);
+        }
+
+        sc.close();
+    }
+}
