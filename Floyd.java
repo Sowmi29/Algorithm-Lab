@@ -1,28 +1,23 @@
 import java.util.Scanner;
 
 public class Floyd {
-    static final int INF = -1; 
+    static final int INF = Integer.MAX_VALUE; 
 
-    static void floydWarshall(int graph[][], int n) {
-        int dist[][] = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                dist[i][j] = graph[i][j];
-            }
-        }
+    static void floydWarshall(int dist[][], int n) {
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (dist[i][k] != INF && dist[k][j] != INF && dist[i][j] > dist[i][k] + dist[k][j]) {
+                    if (dist[i][k] != INF && dist[k][j] != INF && 
+                        dist[i][k] + dist[k][j] < dist[i][j]) {
                         dist[i][j] = dist[i][k] + dist[k][j];
                     }
                 }
             }
         }
+
         printSolution(dist, n);
     }
 
-   
     static void printSolution(int dist[][], int n) {
         System.out.println("Shortest distances between every pair of vertices:");
         for (int i = 0; i < n; i++) {
@@ -48,7 +43,8 @@ public class Floyd {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                graph[i][j] = scanner.nextInt();
+                int input = scanner.nextInt();
+                graph[i][j] = (input == -1 && i != j) ? INF : input;
             }
         }
         floydWarshall(graph, n);
